@@ -24,7 +24,7 @@
     "@tanstack/react-query-next-experimental": "^5.51.11",
     "daisyui": "^4.12.10",
     "jotai": "^2.9.1",
-    "next": "14.2.5",
+    "next": "^14.2.23",
     "react": "^18",
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1"
@@ -42,5 +42,10 @@
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.0.2",
     "typescript": "^5"
+  },
+  "browser": {
+    "fs": false,
+    "os": false,
+    "path": false
   }
 }
