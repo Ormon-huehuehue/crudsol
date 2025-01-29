@@ -5,7 +5,7 @@ use anchor_lang::prelude::*;
 declare_id!("4L2hQmYz9v1xqVB3ChoTakUPSGwwodCwB5jgpqDhxfVe");
 
 #[program]
-pub mod crudapp {
+pub mod journal {
     use super::*;
 
     pub fn create_journal_entry(ctx : Context<CreateEntry>, title : String, message : String) -> Result<()>{

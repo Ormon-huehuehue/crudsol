@@ -1,6 +1,6 @@
 'use client';
 
-import { useBasicProgram } from './basic-data-access'
+import { useBasicProgram } from './journal-data-access'
 
 export function BasicCreate() {
   const { greet } = useBasicProgram();
