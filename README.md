@@ -93,3 +93,4 @@ Build the web app
 pnpm build
 ```
 # crudsol
+# crudsol
