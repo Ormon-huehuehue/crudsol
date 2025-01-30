@@ -63,7 +63,7 @@ export function useJournalProgram() {
 }
 
 
-export function useJournaLProgramAccount({account} : {account : PublicKey}){
+export function useJournalProgramAccount({account} : {account : PublicKey}){
   const {cluster} = useCluster();
   const transactionToast = useTransactionToast();
   const {program, accounts, programId} = useJournalProgram();

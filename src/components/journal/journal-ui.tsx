@@ -29,7 +29,7 @@ export function JournalCreate() {
   }
   
   return (
-    <div>
+    <div className = 'flex flex-col items-center'>
       <input 
         type="text" 
         placeholder="Title" 
@@ -41,12 +41,12 @@ export function JournalCreate() {
         placeholder="Message"
         value={message}
         onChange={(e)=>setMessage(e.target.value)}
-        className="textarea textarea-bordered mb-4 w-full max-w-xs"
+        className="flex justify-center textarea textarea-bordered mb-4 w-full max-w-xs"
       />
       <button 
         onClick={handleSubmit}
         disabled={!isFormValid || createEntry.isPending}
-        className="btn btn-xs lg:btn:md btn-primary"
+        className="flex btn  btn-primary"
       > Create Entry</button>
     </div>
   );
@@ -73,7 +73,7 @@ export function JournalList() {
       {accounts.isLoading ? (
         <span className="loading loading-spinner loading-lg"></span>
       ) : accounts.data?.length ? (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2 p-8">
           {accounts.data?.map((account) => (
             <JournalCard
               key={account.publicKey.toString()}
@@ -92,6 +92,7 @@ export function JournalList() {
 }
 
 function JournalCard({account}: {account : PublicKey}){
+
   const {accountQuery, updateEntry, deleteEntry} = useJournalProgramAccount({account});
 
   const [message, setMessage] = useState(accountQuery.data?.message ?? "");
@@ -114,14 +115,14 @@ function JournalCard({account}: {account : PublicKey}){
 
   return accountQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg" />) : (
-      <div className= 'card card-bordered border-base-300 border-4 text-neutral-content'>
+      <div className= 'card card-bordered border-base-300 border-3  text-neutral-content'>
         <div className= 'card-body items-center text-center'>
           <div className= 'space-y-6'>
             <h2 className= 'card-title justify-center text-3xl cursor-pointer'
             onClick={()=> accountQuery.refetch()}
             > {title}</h2>
-            <p> {account.toString()}</p>
-            <p>{message}</p>
+            <p className= 'text-red-300'>Account : {account.toString()}</p>
+            <p>{accountQuery.data?.message}</p>
             <div className= "card-actions">
               <textarea className= 'textarea textarea-bordered w-full masx-w-xs'
               placeholder = "message"
@@ -142,7 +143,7 @@ function JournalCard({account}: {account : PublicKey}){
                     return deleteEntry.mutate({title});
                   }
                 }}
-                disabled = {!isFormValid || deleteEntry.isPending}
+                disabled = { deleteEntry.isPending}
                 className=  'btn btn-xs lg:btn-md btn-primary'
                 > Delete Entry
               </button>

@@ -14,10 +14,11 @@ export default function JournalFeature() {
   return publicKey ? (
     <div>
       <AppHero
-        title="Basic"
-        subtitle={'Run the program by clicking the "Run program" button.'}
+        title="Journal Program"
+        subtitle={'Submit your journal entries to the Solana blockchain.'}
       >
         <p className="mb-6">
+          Program ID --{' '}
           <ExplorerLink
             path={`account/${programId}`}
             label={ellipsify(programId.toString())}
