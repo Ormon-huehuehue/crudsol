@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useJournalProgram } from './journal-data-access'
+import { useJournalProgramAccount, useJournalProgram } from './journal-data-access'
 import { useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
+
+
 
 export function JournalCreate() {
 
@@ -44,20 +47,20 @@ export function JournalCreate() {
         onClick={handleSubmit}
         disabled={!isFormValid || createEntry.isPending}
         className="btn btn-xs lg:btn:md btn-primary"
-      />
+      > Create Entry</button>
     </div>
   );
 }
 
-export function JournalProgram() {
-  const { getProgramAccount } = useJournalProgram();
+export function JournalList() {
+  const { accounts, getProgramAccount } = useJournalProgram();
 
   if (getProgramAccount.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>;
   }
   if (!getProgramAccount.data?.value) {
     return (
-      <div className="alert alert-info flex justify-center">
+      <div className="flex justify-center alert alert-info">
         <span>
           Program account not found. Make sure you have deployed the program and
           are on the correct cluster.
@@ -66,8 +69,86 @@ export function JournalProgram() {
     );
   }
   return (
-    <div className={'space-y-6'}>
-      <pre>{JSON.stringify(getProgramAccount.data.value, null, 2)}</pre>
+    <div className={"space-y-6"}>
+      {accounts.isLoading ? (
+        <span className="loading loading-spinner loading-lg"></span>
+      ) : accounts.data?.length ? (
+        <div className="grid gap-4 md:grid-cols-2">
+          {accounts.data?.map((account) => (
+            <JournalCard
+              key={account.publicKey.toString()}
+              account={account.publicKey}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center">
+          <h2 className={"text-2xl"}>No accounts</h2>
+          No accounts found. Create one above to get started.
+        </div>
+      )}
     </div>
   );
+}
+
+function JournalCard({account}: {account : PublicKey}){
+  const {accountQuery, updateEntry, deleteEntry} = useJournalProgramAccount({account});
+
+  const [message, setMessage] = useState(accountQuery.data?.message ?? "");
+  const title = accountQuery.data?.title;
+
+
+  const {publicKey} = useWallet();
+
+  const isFormValid : boolean = message?.trim() !==''
+
+  const handleSubmit = ()=>{
+    if (publicKey && isFormValid && title){
+      updateEntry.mutateAsync({title, message, owner : publicKey});
+    }
+  }
+
+  if(!publicKey){
+    return <p> Connect your Wallet</p>
+  }
+
+  return accountQuery.isLoading ? (
+    <span className="loading loading-spinner loading-lg" />) : (
+      <div className= 'card card-bordered border-base-300 border-4 text-neutral-content'>
+        <div className= 'card-body items-center text-center'>
+          <div className= 'space-y-6'>
+            <h2 className= 'card-title justify-center text-3xl cursor-pointer'
+            onClick={()=> accountQuery.refetch()}
+            > {title}</h2>
+            <p> {account.toString()}</p>
+            <p>{message}</p>
+            <div className= "card-actions">
+              <textarea className= 'textarea textarea-bordered w-full masx-w-xs'
+              placeholder = "message"
+              value = {message}
+              onChange = {(e) => setMessage(e.target.value)}
+              />
+
+              <button
+                onClick = {handleSubmit}
+                disabled = {!isFormValid || updateEntry.isPending}
+                className=  'btn btn-xs lg:btn-md btn-primary'
+                > Update Entry
+              </button>
+              <button
+                onClick = {()=>{
+                  const title = accountQuery.data?.title;
+                  if(title){
+                    return deleteEntry.mutate({title});
+                  }
+                }}
+                disabled = {!isFormValid || deleteEntry.isPending}
+                className=  'btn btn-xs lg:btn-md btn-primary'
+                > Delete Entry
+              </button>
+            </div>
+          </div>
+      </div>
+    </div>
+  ) 
 }

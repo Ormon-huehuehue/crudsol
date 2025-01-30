@@ -53,6 +53,25 @@ export function useJournalProgram() {
     }
   })
 
+  return {
+    program,
+    programId,
+    accounts,
+    getProgramAccount,
+    createEntry
+  };
+}
+
+
+export function useJournaLProgramAccount({account} : {account : PublicKey}){
+  const {cluster} = useCluster();
+  const transactionToast = useTransactionToast();
+  const {program, accounts, programId} = useJournalProgram();
+
+  const accountQuery = useQuery({
+    queryKey : ['journal', 'fetch', {cluster, account}],
+    queryFn : async () => program.account.journalEntryState.fetch(account)
+  })
 
   const updateEntry = useMutation<string, Error, CreateEntryArgs>({
     mutationKey : ['journalEntry', 'update', {cluster}],
@@ -81,52 +100,9 @@ export function useJournalProgram() {
   })
 
   return {
-    program,
-    programId,
-    accounts,
-    getProgramAccount,
-    createEntry,
+    accountQuery,
     updateEntry,
-    deleteEntry
-  };
-}
-
-
-export function useJournaLProgramAccount({account} : {account : PublicKey}){
-  const {cluster} = useCluster();
-  const transactionToast = useTransactionToast();
-  const {program, accounts, programId} = useJournalProgram();
-
-  const accountQuery = useQuery({
-    queryKey : ['journal', 'fetch', {cluster, account}],
-    queryFn : async () => program.account.journalEntryState.fetch(account)
-  })
-
-
-  const updateEntry = useMutation<string, Error, CreateEntryArgs>({
-    mutationKey : ['journalEntry', 'update', {cluster}],
-    mutationFn : async ( {title, message}) => {
-      return program.methods.updateJournalEntry(title, message).rpc();
-    },
-    onSuccess : (signature) =>{
-      transactionToast(signature);
-      accounts.refetch();
-    },
-    onError : (error) =>{
-      toast.error(`Error while updating journal entry : ${error.message}`);
-    }
-  })
-
-
-  const deleteEntry = useMutation({
-    mutationKey : ['journalEntry', 'delete', {cluster}],
-    mutationFn : ({title} : {title : string}) =>{
-      return program.methods.deleteJournalEntry(title).rpc();
-    },
-    onSuccess : (signature) =>{
-      transactionToast(signature);
-      accounts.refetch();
-    }
-  })
+    deleteEntry,
+  }
   
 }

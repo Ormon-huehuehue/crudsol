@@ -5,7 +5,7 @@ import { ExplorerLink } from '../cluster/cluster-ui';
 import { WalletButton } from '../solana/solana-provider';
 import { AppHero, ellipsify } from '../ui/ui-layout';
 import { useJournalProgram } from './journal-data-access';
-import { JournalCreate, JournalProgram } from './journal-ui';
+import { JournalCreate, JournalList } from './journal-ui';
 
 export default function JournalFeature() {
   const { publicKey } = useWallet();
@@ -25,7 +25,7 @@ export default function JournalFeature() {
         </p>
         <JournalCreate />
       </AppHero>
-      <JournalProgram />
+      <JournalList />
     </div>
   ) : (
     <div className="max-w-4xl mx-auto">
