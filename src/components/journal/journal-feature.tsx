@@ -4,12 +4,12 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { ExplorerLink } from '../cluster/cluster-ui';
 import { WalletButton } from '../solana/solana-provider';
 import { AppHero, ellipsify } from '../ui/ui-layout';
-import { useBasicProgram } from './journal-data-access';
-import { BasicCreate, BasicProgram } from './basic-ui';
+import { useJournalProgram } from './journal-data-access';
+import { JournalCreate, JournalProgram } from './journal-ui';
 
-export default function BasicFeature() {
+export default function JournalFeature() {
   const { publicKey } = useWallet();
-  const { programId } = useBasicProgram();
+  const { programId } = useJournalProgram();
 
   return publicKey ? (
     <div>
@@ -23,9 +23,9 @@ export default function BasicFeature() {
             label={ellipsify(programId.toString())}
           />
         </p>
-        <BasicCreate />
+        <JournalCreate />
       </AppHero>
-      <BasicProgram />
+      <JournalProgram />
     </div>
   ) : (
     <div className="max-w-4xl mx-auto">
