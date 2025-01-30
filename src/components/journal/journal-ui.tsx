@@ -118,11 +118,11 @@ function JournalCard({account}: {account : PublicKey}){
       <div className= 'card card-bordered border-base-300 border-3  text-neutral-content'>
         <div className= 'card-body items-center text-center'>
           <div className= 'space-y-6'>
-            <h2 className= 'card-title justify-center text-3xl cursor-pointer'
+            <h2 className= 'card-title justify-center text-4xl cursor-pointer'
             onClick={()=> accountQuery.refetch()}
             > {title}</h2>
-            <p className= 'text-red-300'>Account : {account.toString()}</p>
             <p>{accountQuery.data?.message}</p>
+            <p className= 'text-red-200 text-xs'>Account : {account.toString()}</p>
             <div className= "card-actions">
               <textarea className= 'textarea textarea-bordered w-full masx-w-xs'
               placeholder = "message"
